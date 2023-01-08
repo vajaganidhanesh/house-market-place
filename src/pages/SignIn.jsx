@@ -60,10 +60,8 @@ function SignIn() {
             </Link>
 
             <div className="signInBar">
-              <p className="signInText">Sign Up</p>
-              <button className="signInButton" onClick={()=>{
-                navigate('/sign-up')
-              }}>
+              <p className="signInText">Sign In</p>
+              <button className="signInButton">
                 <ArrowRightIcon 
                   fill="#ffffff" 
                   width="34px" 
