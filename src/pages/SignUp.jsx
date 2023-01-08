@@ -4,7 +4,8 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
-} from 'firebase/auth'
+} from 'firebase/auth';
+import { setDoc,doc,serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { ReactComponent as ArrowRightIcon } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
@@ -41,6 +42,11 @@ function SignUp() {
         displayName: name,
       });
 
+      const formDataCopy ={...formData}
+      delete formDataCopy.password
+      formDataCopy.timestamp = serverTimestamp();
+
+      await setDoc(doc(db,'users',user.uid),formDataCopy)
       navigate("/explore");
     } 
     catch (error) {
@@ -98,7 +104,7 @@ function SignUp() {
 
           <div className="signUpBar">
             <p className="signUpText">Sign Up</p>
-            <button className="signUpButton">
+            <button type="submit" className="signUpButton">
               <ArrowRightIcon fill="#ffffff" width="34px" height="34px" />
             </button>
           </div>

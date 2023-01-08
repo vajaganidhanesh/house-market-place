@@ -63,17 +63,17 @@ function Navbar() {
             <li
               className="navbarListItem"
               onClick={() => {
-                navigate("/sign-in");
+                navigate("/profile");
               }}
             >
               <PersonOutlineIcon
-                fill={pathMatchRoute("/sign-in") ? "2c2c2c" : "#8f8f8f"}
+                fill={pathMatchRoute("/profile") ? "2c2c2c" : "#8f8f8f"}
                 width="36px"
                 height="36px"
               />
               <p
                 className={
-                  pathMatchRoute("/sign-in")
+                  pathMatchRoute("/profile")
                     ? "navbarListItemNameActive"
                     : "navbarListItemName"
                 }
