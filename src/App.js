@@ -25,7 +25,7 @@ function App() {
           </Route>
 
           <Route path="/offers" element={<Offers/>}/>
-          <Route path="/category/:categoryName" element={<Category/>}/>
+          <Route path='/category/:categoryName' element={<Category/>}/>
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
           <Route path="/explore" element={<Explore/>}/>
         </Routes>
