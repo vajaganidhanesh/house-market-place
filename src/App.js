@@ -9,6 +9,7 @@ import Offers from "./pages/Offers";
 import ForgotPassword from "./pages/ForgotPassword";
 import Navbar from "./components/Navbar";
 import PrivateRoute from "./components/PrivateRoute";
+import Category from "./pages/Category";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           </Route>
 
           <Route path="/offers" element={<Offers/>}/>
+          <Route path="/category/:categoryName" element={<Category/>}/>
           <Route path="/forgot-password" element={<ForgotPassword/>}/>
           <Route path="/explore" element={<Explore/>}/>
         </Routes>
