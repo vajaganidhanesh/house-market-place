@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { MapContainer,Marker,Popup,TileLayer } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import SwiperCore,{Navigation,Pagination,Scrollbar,Ally} from 'swiper';
+import {Swiper,SwiperSlide} from 'swiper/react'
 import { getDoc, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../firebase.config";
@@ -11,7 +13,6 @@ function Listing() {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
-
   const navigate = useNavigate();
   const param = useParams();
   const auth = getAuth();
@@ -38,6 +39,25 @@ function Listing() {
     <>
       <main>
         {/* slider */}
+        {/* <Helmet>
+        <title>{listing.name}</title>
+      </Helmet> */}
+        <Swiper slidesPerView={1} pagination={{ clickable: true }}>
+          {listing.imageUrls.map((url, index) => (
+            <SwiperSlide key={index}>
+              {console.log(listing.imageUrls[index])}
+              {console.log(url)}
+              <div
+              style={{
+                background: `url(${listing.imageUrls[index]}) center no-repeat`,
+                backgroundSize: 'cover',
+              }}
+              className='swiperSlideDiv'
+            >sdfsdf</div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+
         <div
           className="shareIconDiv"
           onClick={() => {
@@ -90,36 +110,34 @@ function Listing() {
             <li>{listing.furnished && "Furnished Spot"}</li>
           </ul>
 
-          <p className='listingLocationTitle'>Location</p>
+          <p className="listingLocationTitle">Location</p>
 
-          <div className='leafletContainer'>
+          <div className="leafletContainer">
             <MapContainer
-              style={{ height: '100%', width: '100%' }}
-              center={[40.741895, -73.989308]}
+              style={{ height: "100%", width: "100%" }}
+              center={[listing.latitude, listing.longitude]}
               zoom={13}
               scrollWheelZoom={false}
             >
               <TileLayer
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url='https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'
+                url="https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png"
               />
 
-              <Marker
-                position={[40.741895, -73.989308]}
-              >
+              <Marker position={[listing.latitude, listing.longitude]}>
                 <Popup>{listing.address}</Popup>
               </Marker>
             </MapContainer>
           </div>
 
           {auth.currentUser?.uid !== listing.userRef && (
-              <Link
-                to={`/contact/${listing.userRef}?listingName=${listing.name}`}
-                className="primaryButton"
-              >
-                Contact LandLord
-              </Link>
-            )}
+            <Link
+              to={`/contact/${listing.userRef}?listingName=${listing.name}`}
+              className="primaryButton"
+            >
+              Contact LandLord
+            </Link>
+          )}
         </div>
       </main>
     </>

@@ -57,6 +57,8 @@ function CreateListing() {
   const auth = getAuth();
   const navigate = useNavigate();
   const isMounted = useRef(true);
+  const geodata = useRef({});
+  
 
   useEffect(() => {
     if (isMounted) {
@@ -69,10 +71,16 @@ function CreateListing() {
       });
     }
 
+    navigator.geolocation.getCurrentPosition(position=>{
+      geodata.current = position
+    })
+
     return () => {
       isMounted.current = false;
     };
-  }, [isMounted]);
+  }, [isMounted,geodata.current]);
+
+  console.log(geodata.current.coords);
 
   const onSubmit = async(e) => {
     e.preventDefault();
@@ -93,18 +101,7 @@ function CreateListing() {
       toast.error('Max 6 images')
       return
     }
-    // let geolocation = {}
-    // let location = null
-
-    // if(geolocationEnabled){
-
-    //   const response = await fetch()
-    // }else{
-    //   geolocation.lat = latitude
-    //   geolocation.lng = longitude
-    //   location = address
-    // }
-
+  
     // Store images in firebase
     const storeImage = async (image)=>{
       return new Promise((resolve,reject)=>{
@@ -144,6 +141,8 @@ function CreateListing() {
       })
     }
 
+    
+
     const imageUrls = await Promise.all(
       [...images].map((image)=>storeImage(image))
     ).catch(()=>{
@@ -155,8 +154,13 @@ function CreateListing() {
     const formDataCopy = {
       ...formData,
       imageUrls,
+      latitude :geodata.current.coords.latitude,
+      longitude :geodata.current.coords.longitude,
       timestamp:serverTimestamp()
     }
+    console.log(formDataCopy);
+
+    console.log(geodata.current.coords.latitude);
 
     delete formDataCopy.images
     !formDataCopy.offer && delete formDataCopy.discountPrice
@@ -211,7 +215,7 @@ function CreateListing() {
 
         <main>
           <form onSubmit={onSubmit}>
-            <label className="formLabel">Sell / Rent</label>
+            <label className="formLabel">Sale / Rent</label>
             <div className="formButtons">
               <button
                 type="button"
@@ -220,7 +224,7 @@ function CreateListing() {
                 value="sale"
                 onClick={onMutate}
               >
-                Sell
+                Sale
               </button>
 
               <button
