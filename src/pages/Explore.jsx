@@ -1,6 +1,7 @@
 import {Link} from 'react-router-dom';
 import rentCategoryImage from '../assets/jpg/rentCategoryImage.jpg';
 import sellCategoryImage from '../assets/jpg/sellCategoryImage.jpg';
+import Slidder from '../components/Slidder';
 
 
 function Explore() {
@@ -13,6 +14,8 @@ function Explore() {
 
         <main>
           {/* {Slider} */}
+
+          <Slidder/>
           <p className="exploreCategoryHeading">Categories</p>
           <div className="exploreCategories">
             <Link to="/category/rent">
