@@ -38,7 +38,7 @@ function Profile() {
 
       const q = query(
         listingsRef,
-        where("useRef", "==", auth.currentUser.uid),
+        where("userRef", "==", auth.currentUser.uid),
         orderBy("timestamp", "desc")
       );
 
@@ -52,11 +52,13 @@ function Profile() {
           data: doc.data(),
         })
       })
-
+      
       setListings(listings)
       setLoading(false)
     }
+
     fetchUserListings()
+
   },[auth.currentUser.uid])
 
   const onLogout = () => {
@@ -93,7 +95,7 @@ function Profile() {
 
   const onDelete = async (listingId) => {
     if (window.confirm('Are you sure you want to delete?')) {
-      await deleteDoc(doc(db, 'listings', listingId))
+      await deleteDoc(doc(db, 'listening', listingId))
       const updatedListings = listings.filter(
         (listing) => listing.id !== listingId
       )
