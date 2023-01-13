@@ -55,7 +55,7 @@ function Listing() {
                 backgroundSize: 'cover',
               }}
               className='swiperSlideDiv'
-            >sdfsdf</div>
+            ></div>
             </SwiperSlide>
           ))}
         </Swiper>

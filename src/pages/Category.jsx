@@ -131,7 +131,7 @@ function Category() {
 
             {
               lastFetchedListing && (
-                <p className="loadMore" onClick={onFetchMoreListings}>loadmore</p>
+                <p className="loadMore" onClick={onFetchMoreListings}>Load More</p>
               )
             }
           </>

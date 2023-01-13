@@ -32,9 +32,9 @@ function Slidder() {
       setLoading(false);
     }
     
-
     fetchListing();
   }, []);
+
   if (loading) {
     return <Spinner />
   }
