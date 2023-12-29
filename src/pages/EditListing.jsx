@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { useState, useRef, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
@@ -111,6 +112,7 @@ function EditListing() {
     return () => {
       isMounted.current = false;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMounted,geodata.current]);
 
   console.log(geodata.current.coords);
