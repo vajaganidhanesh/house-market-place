@@ -1,10 +1,13 @@
-import {Link} from 'react-router-dom';
-import rentCategoryImage from '../assets/jpg/rentCategoryImage.jpg';
-import sellCategoryImage from '../assets/jpg/sellCategoryImage.jpg';
-import Slidder from '../components/Slidder';
-
+import { Link } from "react-router-dom";
+import rentCategoryImage from "../assets/jpg/rentCategoryImage.jpg";
+import sellCategoryImage from "../assets/jpg/sellCategoryImage.jpg";
+import Slidder from "../components/Slidder";
 
 function Explore() {
+  if (Math.random() > 0.5) {
+    console.log(Math.random());
+    return new Error("Test Error Boundary");
+  }
   return (
     <>
       <div className="explore">
@@ -15,7 +18,7 @@ function Explore() {
         <main>
           {/* {Slider} */}
 
-          <Slidder/>
+          <Slidder />
           <p className="exploreCategoryHeading">Categories</p>
           <div className="exploreCategories">
             <Link to="/category/rent">
@@ -33,7 +36,7 @@ function Explore() {
                 alt="sell"
                 className="exploreCategoryImg"
               />
-               <p className="exploreCategoryName">Places for sale</p>
+              <p className="exploreCategoryName">Places for sale</p>
             </Link>
           </div>
         </main>
@@ -42,4 +45,4 @@ function Explore() {
   );
 }
 
-export default Explore
+export default Explore;

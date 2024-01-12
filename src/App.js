@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Explore from "./pages/Explore";
@@ -18,35 +19,49 @@ const Contact = lazy(() => import("./pages/Contact"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const EditListing = lazy(() => import("./pages/EditListing"));
 
+function ErrorfallBack({ error, resetErrorBoundary }) {
+  return (
+    <div>
+      <p>Something went wrong</p>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  );
+}
+
 function App() {
   return (
     <>
-      <Suspense fallback={<Spinner />}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Explore />} />
-            <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/sign-in" element={<SignIn />} />
+      <ErrorBoundary FallbackComponent={ErrorfallBack} onReset={() => {}}>
+        <Suspense fallback={<Spinner />}>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Explore />} />
+              <Route path="/sign-up" element={<SignUp />} />
+              <Route path="/sign-in" element={<SignIn />} />
 
-            <Route path="/profile" element={<PrivateRoute />}>
-              <Route path="/profile" element={<Profile />} />
-            </Route>
-            <Route path="/offers" element={<Offers />} />
-            <Route path="/category/:categoryName" element={<Category />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/create-listing" element={<CreateListing />} />
-            <Route path="/edit-listing/:listingId" element={<EditListing />} />
-            <Route path="/contact/:landlordId" element={<Contact />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route
-              path="/category/:categoryName/:listingId"
-              element={<Listing />}
-            />
-          </Routes>
-          <Navbar />
-        </Router>
-        <ToastContainer />
-      </Suspense>
+              <Route path="/profile" element={<PrivateRoute />}>
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+              <Route path="/offers" element={<Offers />} />
+              <Route path="/category/:categoryName" element={<Category />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/create-listing" element={<CreateListing />} />
+              <Route
+                path="/edit-listing/:listingId"
+                element={<EditListing />}
+              />
+              <Route path="/contact/:landlordId" element={<Contact />} />
+              <Route path="/explore" element={<Explore />} />
+              <Route
+                path="/category/:categoryName/:listingId"
+                element={<Listing />}
+              />
+            </Routes>
+            <Navbar />
+          </Router>
+          <ToastContainer />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 }
