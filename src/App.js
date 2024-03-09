@@ -21,9 +21,23 @@ const EditListing = lazy(() => import("./pages/EditListing"));
 
 function ErrorfallBack({ error, resetErrorBoundary }) {
   return (
-    <div>
-      <p>Something went wrong</p>
-      <button onClick={resetErrorBoundary}>Try again</button>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh", // Adjust height as needed
+      }}
+    >
+      <p style={{ fontWeight: "bold" }}>Looks like Something went wrong</p>
+      <button
+        style={{ minWidth: "200px" }}
+        className="primaryButton"
+        onClick={resetErrorBoundary}
+      >
+        Please Click here to refresh the website
+      </button>
     </div>
   );
 }
