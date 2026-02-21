@@ -73,7 +73,7 @@ function CreateListing() {
     return () => {
       isMounted.current = false;
     };
-  }, [isMounted, geodata.current]);
+  }, [isMounted, auth, formData, navigate]);
 
   console.log(geodata.current.coords);
 

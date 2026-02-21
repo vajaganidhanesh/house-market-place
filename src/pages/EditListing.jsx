@@ -64,7 +64,7 @@ function EditListing() {
       toast.error("You can not edit that listing");
       navigate("/explore");
     }
-  }, []);
+  }, [auth.currentUser.uid, listing, navigate]);
 
   // Fetching listing data from user
   useEffect(() => {
@@ -84,7 +84,7 @@ function EditListing() {
     };
 
     fetchListing();
-  }, []);
+  }, [navigate, params.listingId]);
 
   // Sets userRef when login
   useEffect(() => {
