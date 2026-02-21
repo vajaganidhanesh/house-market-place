@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 function Contact() {
   const [message, setMessage] = useState("");
   const [landlord, setLandlord] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const param = useParams();
 
@@ -41,24 +41,24 @@ function Contact() {
             </div>
 
             <form className="messageForm">
-                <div className="messageDiv">
+              <div className="messageDiv">
                 <label className="messageLabel">Message</label>
-              
-              <textarea
-                name="message"
-                id="message"
-                className="textarea"
-                value={message}
-                onChange={onChange}
-              ></textarea>
-                </div>
+
+                <textarea
+                  name="message"
+                  id="message"
+                  className="textarea"
+                  value={message}
+                  onChange={onChange}
+                ></textarea>
+              </div>
               <a
                 href={`mailto:${landlord.email}?Subject=${searchParams.get(
-                  "listingName"
+                  "listingName",
                 )}&body=${message}`}
               >
                 <button type="button" className="primaryButton">
-                    Send Message
+                  Send Message
                 </button>
               </a>
             </form>

@@ -8,23 +8,18 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-import {
-  doc,
-  updateDoc,
-  getDoc,
-  serverTimestamp 
-} from "firebase/firestore";
+import { doc, updateDoc, getDoc, serverTimestamp } from "firebase/firestore";
 
-import {db} from '../firebase.config'
+import { db } from "../firebase.config";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
-import {toast} from 'react-toastify';
-import {v4 as uuidv4} from 'uuid'
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 
 function EditListing() {
-  const [geolocationEnabled, setGeolocationEnabled] = useState(true);
+  const [geolocationEnabled] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [listing,setListing] = useState(null)
+  const [listing, setListing] = useState(null);
   const [formData, setFormData] = useState({
     type: "rent",
     name: "",
@@ -64,34 +59,32 @@ function EditListing() {
   const geodata = useRef({});
 
   //  Redirect if listing is not user's
-  useEffect(()=>{
-    if(listing && listing.userRef !== auth.currentUser.uid){
-        toast.error('You can not edit that listing')
-        navigate('/explore')
+  useEffect(() => {
+    if (listing && listing.userRef !== auth.currentUser.uid) {
+      toast.error("You can not edit that listing");
+      navigate("/explore");
     }
-  })
-  
+  }, []);
 
   // Fetching listing data from user
-  useEffect(()=>{
-    setLoading(true)
-    const fetchListing = async()=>{
-        const docRef = doc(db,'listening',params.listingId)
-        const docSnap = await getDoc(docRef)
+  useEffect(() => {
+    setLoading(true);
+    const fetchListing = async () => {
+      const docRef = doc(db, "listening", params.listingId);
+      const docSnap = await getDoc(docRef);
 
-        if(docSnap.exists()){
-            setListing(docSnap.data())
-            setFormData({...docSnap.data(),address:docSnap.data().address})
-            setLoading(false)
-        }
-        else{
-            navigate('/explore')
-            toast.error('Listing does not exist')
-        }
-    }
+      if (docSnap.exists()) {
+        setListing(docSnap.data());
+        setFormData({ ...docSnap.data(), address: docSnap.data().address });
+        setLoading(false);
+      } else {
+        navigate("/explore");
+        toast.error("Listing does not exist");
+      }
+    };
 
-    fetchListing()
-  },[])
+    fetchListing();
+  }, []);
 
   // Sets userRef when login
   useEffect(() => {
@@ -105,137 +98,134 @@ function EditListing() {
       });
     }
 
-    navigator.geolocation.getCurrentPosition(position=>{
-      geodata.current = position
-    })
+    navigator.geolocation.getCurrentPosition((position) => {
+      geodata.current = position;
+    });
 
     return () => {
       isMounted.current = false;
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMounted,geodata.current]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMounted, geodata.current]);
 
   console.log(geodata.current.coords);
 
-  const onSubmit = async(e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading(true)
-    if(name.trim().length < 4 ){
-      setLoading(false)
-      toast.error('Could not find the Name')
+    setLoading(true);
+    if (name.trim().length < 4) {
+      setLoading(false);
+      toast.error("Could not find the Name");
     }
 
-    if(discountPrice >= regularPrice){
-      setLoading(false)
-      toast.error('Discounted price needs to be less than regular price')
+    if (discountPrice >= regularPrice) {
+      setLoading(false);
+      toast.error("Discounted price needs to be less than regular price");
     }
 
-    if(images.length > 6){
-      setLoading(false)
-      toast.error('Max 6 images')
-      return
+    if (images.length > 6) {
+      setLoading(false);
+      toast.error("Max 6 images");
+      return;
     }
-  
+
     // Store images in firebase
-    const storeImage = async (image)=>{
-      return new Promise((resolve,reject)=>{
-        const storage = getStorage()
-        const fileName = `${auth.currentUser.uid}-${images.name}-${uuidv4()}`
+    const storeImage = async (image) => {
+      return new Promise((resolve, reject) => {
+        const storage = getStorage();
+        const fileName = `${auth.currentUser.uid}-${images.name}-${uuidv4()}`;
 
-        const storageRef = ref(storage,'images/' + fileName)
+        const storageRef = ref(storage, "images/" + fileName);
 
         const uploadTask = uploadBytesResumable(storageRef, image);
 
-        uploadTask.on('state_changed', 
-        (snapshot) => {
-         
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
-          }
-        }, 
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+            switch (snapshot.state) {
+              case "paused":
+                console.log("Upload is paused");
+                break;
+              case "running":
+                console.log("Upload is running");
+                break;
+            }
+          },
           (error) => {
-            reject(error)
-          }, 
+            reject(error);
+          },
           () => {
-            
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              resolve(downloadURL)
-              console.log('File available at', downloadURL);
-            })
-          }
-        )
-
-      })
-    }
-
-    
+              resolve(downloadURL);
+              console.log("File available at", downloadURL);
+            });
+          },
+        );
+      });
+    };
 
     const imageUrls = await Promise.all(
-      [...images].map((image)=>storeImage(image))
-    ).catch(()=>{
-      setLoading(false)
-      toast.error('Images not Uploaded')
-      return
-    })
+      [...images].map((image) => storeImage(image)),
+    ).catch(() => {
+      setLoading(false);
+      toast.error("Images not Uploaded");
+      return;
+    });
 
     const formDataCopy = {
       ...formData,
       imageUrls,
-      latitude :geodata.current.coords.latitude,
-      longitude :geodata.current.coords.longitude,
-      timestamp:serverTimestamp()
-    }
+      latitude: geodata.current.coords.latitude,
+      longitude: geodata.current.coords.longitude,
+      timestamp: serverTimestamp(),
+    };
     console.log(formDataCopy);
 
     console.log(geodata.current.coords.latitude);
 
-    delete formDataCopy.images
-    !formDataCopy.offer && delete formDataCopy.discountPrice
+    delete formDataCopy.images;
+    !formDataCopy.offer && delete formDataCopy.discountPrice;
 
     // const docRef = await addDoc(collection(db,'listening'),formDataCopy)
 
     // Update listing
-    const docRef = doc(db,'listening',params.listingId)
-    await updateDoc(docRef, formDataCopy)
-    setLoading(false)
+    const docRef = doc(db, "listening", params.listingId);
+    await updateDoc(docRef, formDataCopy);
+    setLoading(false);
 
-    toast.success('Listing saved')
-    navigate(`/category/${formDataCopy.type}/${docRef.id}`)
-  }
+    toast.success("Listing saved");
+    navigate(`/category/${formDataCopy.type}/${docRef.id}`);
+  };
 
   const onMutate = (e) => {
     let boolean = null;
 
-    if(e.target.value === 'true'){
-      boolean = true
+    if (e.target.value === "true") {
+      boolean = true;
     }
 
-    if(e.target.value === 'false'){
-      boolean = false
+    if (e.target.value === "false") {
+      boolean = false;
     }
 
     // Files
-    if(e.target.files){
-      setFormData((prevState)=>({
+    if (e.target.files) {
+      setFormData((prevState) => ({
         ...prevState,
-        images: e.target.files
-      }))
+        images: e.target.files,
+      }));
     }
 
     // Text/Booleans/Numbers
-    if(!e.target.files){
-      setFormData((prevState)=>({
+    if (!e.target.files) {
+      setFormData((prevState) => ({
         ...prevState,
-        [e.target.id]:boolean ?? e.target.value,
-      }))
+        [e.target.id]: boolean ?? e.target.value,
+      }));
     }
 
     console.log(formData);
